@@ -1,6 +1,6 @@
 // frontend/src/App.js
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import api from "./api";
@@ -9,21 +9,20 @@ function App() {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    document.documentElement.classList.contains("dark")
+  );
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [user, setUser] = useState({ username: localStorage.getItem("username") });
 
-  // Load theme
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setDarkMode(savedTheme === "dark");
-    document.documentElement.classList.toggle("dark", savedTheme === "dark");
-  }, []);
-
-  // Save theme
-  useEffect(() => {
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", darkMode);
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
   }, [darkMode]);
 
   // Fetch notes when token changes

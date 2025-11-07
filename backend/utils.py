@@ -21,6 +21,7 @@ def token_required(f):
             auth_header = request.headers["Authorization"]
             if auth_header.startswith("Bearer "):
                 token = auth_header.split(" ")[1]
+        print("🔹 Incoming token:", token)  # debug
 
         if not token:
             return jsonify({"error": "Token missing"}), 401
@@ -28,14 +29,19 @@ def token_required(f):
         try:
             secret = current_app.config.get("SECRET_KEY", "dev_secret_key_change_this")
             data = jwt.decode(token, secret, algorithms=["HS256"])
-            user_id = int(data["sub"])  # convert back to int
+            print("🔹 Decoded JWT:", data)  # debug
+            user_id = int(data["sub"])
             user = User.query.get(user_id)
+            print("🔹 Found user:", user)  # debug
             if not user:
                 return jsonify({"error": "User not found"}), 401
         except jwt.ExpiredSignatureError:
+            print("❌ Token expired")
             return jsonify({"error": "Token expired"}), 401
         except jwt.InvalidTokenError as e:
+            print("❌ Invalid token error:", e)
             return jsonify({"error": f"Invalid token: {str(e)}"}), 401
 
         return f(user, *args, **kwargs)
     return decorated
+

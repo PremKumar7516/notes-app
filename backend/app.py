@@ -15,7 +15,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(DB_DIR, "not
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # CORS
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://192.168.0.8:3000"]}}, supports_credentials=True)
+
 
 # import models and db
 from models import db, User, Note
