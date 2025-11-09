@@ -1,7 +1,8 @@
 import axios from "axios";
 
+// Use environment variable if available, otherwise fall back to localhost
 const api = axios.create({
-  baseURL: "http://192.168.0.8:5000/api",
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000/api",
 });
 
 api.interceptors.request.use(
